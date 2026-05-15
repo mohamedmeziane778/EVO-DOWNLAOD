@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>EVO DOWNLOAD | منصة التحميل الحصرية</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    cursor: default;
+  }
+
+  /* CUSTOM CURSOR - STARTS NORMAL, CHANGES ON LOGIN */
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* when logged in class is added to body, cursor becomes custom gaming cursor */
+  body.logged-in-cursor {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><polygon points="2,2 30,8 24,24 8,28" fill="%2300d4ff" stroke="%237c3aed" stroke-width="2" fill-opacity="0.9"/><circle cx="10" cy="12" r="2.5" fill="white"/><circle cx="20" cy="16" r="2.5" fill="white"/><path d="M14 20 L18 22 L22 20" stroke="white" stroke-width="2" fill="none"/></svg>') 8 8, auto;
+  }
+
+  /* hover over clickable elements - subtle effect */
+  a, button, .cat-item, .download-btn, .copy-btn, .login-btn, .discord-link-btn, .add-cat-btn, .add-file-btn {
+    cursor: pointer;
+  }
+
+  body.logged-in-cursor a, 
+  body.logged-in-cursor button,
+  body.logged-in-cursor .cat-item,
+  body.logged-in-cursor .download-btn,
+  body.logged-in-cursor .copy-btn,
+  body.logged-in-cursor .login-btn,
+  body.logged-in-cursor .discord-link-btn {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28"><polygon points="2,2 26,6 20,22 6,26" fill="%23ffd700" stroke="%23f59e0b" stroke-width="2"/><circle cx="9" cy="11" r="2" fill="white"/><circle cx="18" cy="14" r="2" fill="white"/></svg>') 6 6, pointer;
+  }
+
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #10101a;
+    --bg3: #16162a;
+    --card: #1a1a2e;
+    --card2: #1e1e38;
+    --accent: #00d4ff;
+    --accent2: #7c3aed;
+    --accent3: #f59e0b;
+    --gold: #ffd700;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --border: rgba(0,212,255,0.2);
+    --danger: #ef4444;
+    --success: #22c55e;
+    --radius: 14px;
+    --radius-sm: 9px;
+  }
+
+  /* BG animations + grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 40% at 30% 0%, rgba(0,212,255,0.05) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 30% at 80% 100%, rgba(124,58,237,0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: linear-gradient(rgba(0,212,255,0.02) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(0,212,255,0.02) 1px, transparent 1px);
+    background-size: 36px 36px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* LOGIN SCREEN */
+  #loginScreen {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2rem;
+    backdrop-filter: blur(2px);
+  }
+
+  .login-logo {
+    font-family: 'Orbitron', monospace;
+    font-size: 3.2rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 5px;
+    animation: neonPulse 2.2s infinite ease;
+  }
+
+  @keyframes neonPulse {
+    0%, 100% { filter: drop-shadow(0 0 8px rgba(0,212,255,0.4)); }
+    50% { filter: drop-shadow(0 0 28px rgba(0,212,255,0.7)); }
+  }
+
+  .login-subtitle {
+    color: var(--muted);
+    font-size: 0.85rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .login-box {
+    background: rgba(26,26,46,0.8);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    padding: 2rem;
+    width: 360px;
+    box-shadow: 0 20px 35px rgba(0,0,0,0.5);
+  }
+
+  .login-field {
+    margin-bottom: 1rem;
+  }
+
+  .login-field label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .login-field input {
+    width: 100%;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem;
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    text-align: center;
+    letter-spacing: 1px;
+    transition: 0.2s;
+  }
+
+  .login-field input:focus {
+    border-color: var(--accent);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0,212,255,0.1);
+  }
+
+  .login-btn {
+    width: 100%;
+    background: linear-gradient(95deg, var(--accent2), var(--accent));
+    border: none;
+    padding: 0.8rem;
+    border-radius: 40px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 0.2s;
+  }
+
+  .login-btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
+  .login-error { color: var(--danger); font-size: 0.8rem; text-align: center; margin-top: 8px; display: none; }
+
+  /* MAIN APP */
+  #app { position: relative; z-index: 2; display: none; }
+
+  /* HEADER */
+  header {
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--border);
+    height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 99;
+  }
+
+  .logo {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.5rem;
+    font-weight: 900;
+    background: linear-gradient(125deg, var(--accent), #a855f7);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .user-badge {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    padding: 0.3rem 1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .king-badge { border-color: var(--gold); background: rgba(255,215,0,0.08); color: var(--gold); }
+  .logout-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    padding: 0.3rem 1rem;
+    border-radius: 30px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .logout-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+  /* DISCORD BANNER - TOP SECTION */
+  .discord-top-banner {
+    background: linear-gradient(135deg, #1e1a3a, #0f0c29);
+    border-bottom: 2px solid #5865F2;
+    padding: 0.85rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    text-align: center;
+  }
+  .discord-top-banner span {
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  .discord-link-btn {
+    background: #5865F2;
+    padding: 0.45rem 1.5rem;
+    border-radius: 40px;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.2s;
+    font-size: 0.9rem;
+  }
+  .discord-link-btn:hover { background: #4752c4; transform: scale(1.02); filter: drop-shadow(0 0 8px #5865F2); }
+
+  /* SEARCH & STATS */
+  .search-section {
+    max-width: 1300px;
+    margin: 1.5rem auto 0.5rem;
+    padding: 0 2rem;
+  }
+  .search-wrapper {
+    position: relative;
+    max-width: 550px;
+    margin: 0 auto;
+  }
+  .search-input {
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 60px;
+    padding: 0.8rem 2rem 0.8rem 1.2rem;
+    color: white;
+    font-family: 'Cairo', sans-serif;
+    outline: none;
+  }
+  .search-input:focus { border-color: var(--accent); }
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+  }
+  .stat-item { font-size: 0.8rem; color: var(--muted); }
+  .stat-item span { color: var(--accent); font-weight: bold; }
+
+  /* LAYOUT GRID */
+  .main-layout {
+    max-width: 1400px;
+    margin: 1rem auto 2rem;
+    padding: 0 2rem;
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 1.8rem;
+  }
+
+  .sidebar {
+    position: sticky;
+    top: 85px;
+    background: rgba(16,16,26,0.5);
+    border-radius: 24px;
+    padding: 1rem;
+    backdrop-filter: blur(4px);
+    border: 1px solid var(--border);
+  }
+
+  .sidebar-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: var(--muted);
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+  }
+
+  .cat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0.7rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-bottom: 4px;
+  }
+  .cat-item:hover, .cat-item.active { background: var(--card); border: 1px solid var(--border); color: var(--accent); }
+  .cat-left { display: flex; gap: 8px; align-items: center; }
+  .cat-count { background: rgba(0,212,255,0.1); border-radius: 30px; padding: 0.1rem 0.5rem; font-size: 0.7rem; }
+
+  .add-cat-section {
+    display: flex;
+    gap: 8px;
+    margin-top: 1rem;
+  }
+  .add-cat-input {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 0.4rem 0.8rem;
+    flex: 1;
+    color: white;
+  }
+
+  /* FILE GRID */
+  .files-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 1.3rem;
+  }
+
+  .file-card {
+    background: var(--card);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    padding: 1.2rem;
+    transition: 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .file-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+    box-shadow: 0 18px 30px -15px rgba(0,212,255,0.2);
+  }
+
+  .file-card-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  .file-icon-wrap {
+    background: rgba(0,212,255,0.08);
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+  }
+  .file-name {
+    font-weight: 800;
+    font-size: 1rem;
+    line-height: 1.3;
+    word-break: break-word;
+  }
+  .file-desc {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    line-height: 1.4;
+  }
+  .meta-tag {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    display: inline-block;
+  }
+  .meta-size { background: #2d2a4e; color: #c084fc; }
+  .meta-pass { background: #3e2a1f; color: #fbbf24; }
+  .meta-downloads { background: #1e3a2f; color: #4ade80; }
+  .file-card-bottom {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 6px;
+  }
+  .download-btn {
+    background: linear-gradient(95deg, #6d28d9, #0ea5e9);
+    border: none;
+    padding: 0.55rem;
+    border-radius: 40px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    flex: 1;
+    font-family: 'Cairo', sans-serif;
+    transition: 0.2s;
+  }
+  .copy-btn {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 40px;
+    padding: 0.55rem 1rem;
+    cursor: pointer;
+    color: var(--muted);
+  }
+  .copy-btn.copied { color: var(--success); border-color: var(--success); }
+  .empty-state { text-align: center; padding: 3rem; color: var(--muted); }
+
+  /* REVIEWS SECTION */
+  .reviews-section {
+    background: rgba(16,16,26,0.6);
+    border-radius: 24px;
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    margin-top: 2rem;
+    backdrop-filter: blur(4px);
+  }
+  .reviews-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.8rem;
+  }
+  .rating-stars { color: var(--gold); letter-spacing: 2px; font-size: 1.2rem; }
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+  .review-card {
+    background: rgba(0,0,0,0.3);
+    border-radius: 16px;
+    padding: 1rem;
+    border: 1px solid rgba(255,215,0,0.15);
+  }
+  .review-stars { color: var(--gold); font-size: 0.9rem; margin-bottom: 0.5rem; }
+  .review-text { font-size: 0.8rem; color: #cbd5e1; line-height: 1.5; margin-bottom: 0.5rem; }
+  .review-author { font-size: 0.7rem; color: var(--accent); display: flex; align-items: center; gap: 6px; }
+  .flag-icon { font-size: 0.9rem; }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 500;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--card2);
+    border-radius: 28px;
+    border: 1px solid var(--border);
+    width: 500px;
+    max-width: 94vw;
+    padding: 1.8rem;
+    gap: 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+  .form-group input, .form-group textarea, .form-group select {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 0.6rem;
+    color: white;
+    width: 100%;
+  }
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: #1a1a2ecc;
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--accent);
+    border-radius: 40px;
+    padding: 0.6rem 1.5rem;
+    z-index: 1000;
+    transition: 0.25s;
+    font-weight: 600;
+    pointer-events: none;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  
+  /* Confetti canvas */
+  #confetti-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10000;
+  }
+  
+  @media (max-width: 800px) {
+    .main-layout { grid-template-columns: 1fr; padding: 0 1rem; }
+    header { padding: 0 1rem; }
+    .discord-top-banner { padding: 0.7rem 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<!-- Sound Effects Web Audio -->
+<script>
+  class SoundFX {
+    constructor() { this.audioCtx = null; this.enabled = true; }
+    init() { if (!this.audioCtx && window.AudioContext) { this.audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } }
+    playBeep(type) {
+      if (!this.enabled) return;
+      try {
+        this.init();
+        if (!this.audioCtx) return;
+        const now = this.audioCtx.currentTime;
+        const oscillator = this.audioCtx.createOscillator();
+        const gain = this.audioCtx.createGain();
+        oscillator.connect(gain);
+        gain.connect(this.audioCtx.destination);
+        oscillator.type = 'sine';
+        let frequency = 800, duration = 0.15;
+        if (type === 'success') { frequency = 880; duration = 0.2; gain.gain.setValueAtTime(0.2, now); gain.gain.exponentialRampToValueAtTime(0.0001, now + duration); oscillator.frequency.setValueAtTime(frequency, now); oscillator.frequency.exponentialRampToValueAtTime(600, now + duration); oscillator.start(); oscillator.stop(now + duration); }
+        else if (type === 'error') { frequency = 440; duration = 0.25; gain.gain.setValueAtTime(0.25, now); gain.gain.exponentialRampToValueAtTime(0.0001, now + duration); oscillator.frequency.setValueAtTime(frequency, now); oscillator.frequency.exponentialRampToValueAtTime(300, now + duration); oscillator.start(); oscillator.stop(now + duration); }
+        else if (type === 'click') { frequency = 1200; duration = 0.08; gain.gain.setValueAtTime(0.12, now); gain.gain.exponentialRampToValueAtTime(0.0001, now + duration); oscillator.frequency.setValueAtTime(frequency, now); oscillator.start(); oscillator.stop(now + duration); }
+        else if (type === 'download') { frequency = 600; duration = 0.12; gain.gain.setValueAtTime(0.2, now); gain.gain.exponentialRampToValueAtTime(0.0001, now + duration); oscillator.frequency.setValueAtTime(frequency, now); oscillator.frequency.exponentialRampToValueAtTime(400, now + duration*0.8); oscillator.start(); oscillator.stop(now + duration); }
+        else if (type === 'delete') { frequency = 320; duration = 0.2; gain.gain.setValueAtTime(0.22, now); gain.gain.exponentialRampToValueAtTime(0.0001, now + duration); oscillator.frequency.setValueAtTime(frequency, now); oscillator.frequency.exponentialRampToValueAtTime(180, now + duration); oscillator.start(); oscillator.stop(now + duration); }
+        else if (type === 'login') { frequency = 1000; duration = 0.25; gain.gain.setValueAtTime(0.2, now); gain.gain.exponentialRampToValueAtTime(0.0001, now + duration); oscillator.frequency.setValueAtTime(frequency, now); oscillator.frequency.exponentialRampToValueAtTime(1200, now + duration*0.6); oscillator.start(); oscillator.stop(now + duration); }
+        else if (type === 'hover') { frequency = 1800; duration = 0.04; gain.gain.setValueAtTime(0.05, now); gain.gain.exponentialRampToValueAtTime(0.0001, now + duration); oscillator.frequency.setValueAtTime(frequency, now); oscillator.start(); oscillator.stop(now + duration); }
+        else if (type === 'copy') { frequency = 1500; duration = 0.1; gain.gain.setValueAtTime(0.15, now); gain.gain.exponentialRampToValueAtTime(0.0001, now + duration); oscillator.frequency.setValueAtTime(frequency, now); oscillator.frequency.exponentialRampToValueAtTime(900, now + duration); oscillator.start(); oscillator.stop(now + duration); }
+      } catch(e) { console.warn("audio error", e); }
+    }
+    hover() { this.playBeep('hover'); }
+    click() { this.playBeep('click'); }
+    success() { this.playBeep('success'); }
+    error() { this.playBeep('error'); }
+    download() { this.playBeep('download'); }
+    deleteSound() { this.playBeep('delete'); }
+    loginSound() { this.playBeep('login'); }
+    copySound() { this.playBeep('copy'); }
+  }
+  const sfx = new SoundFX();
+  function enableAudioOnFirstClick() { sfx.init(); document.removeEventListener('click', enableAudioOnFirstClick); document.removeEventListener('keydown', enableAudioOnFirstClick); }
+  document.addEventListener('click', enableAudioOnFirstClick);
+  document.addEventListener('keydown', enableAudioOnFirstClick);
+  
+  // CONFETTI EFFECT ON LOGIN
+  function startConfetti() {
+    const canvas = document.getElementById('confetti-canvas');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const ctx = canvas.getContext('2d');
+    const particles = [];
+    const colors = ['#00d4ff', '#7c3aed', '#ffd700', '#f59e0b', '#22c55e', '#ef4444', '#ec4899'];
+    
+    for(let i = 0; i < 180; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        size: Math.random() * 8 + 3,
+        speedX: (Math.random() - 0.5) * 3,
+        speedY: Math.random() * 7 + 4,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        rotation: Math.random() * 360,
+        rotSpeed: (Math.random() - 0.5) * 10
+      });
+    }
+    
+    let animationId;
+    let startTime = Date.now();
+    const duration = 2800;
+    
+    function draw() {
+      if(Date.now() - startTime > duration) {
+        cancelAnimationFrame(animationId);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        return;
+      }
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let allDead = true;
+      for(let p of particles) {
+        p.x += p.speedX;
+        p.y += p.speedY;
+        p.rotation += p.rotSpeed;
+        if(p.y < canvas.height + 100) allDead = false;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rotation * Math.PI / 180);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+        ctx.restore();
+      }
+      if(allDead) { cancelAnimationFrame(animationId); ctx.clearRect(0, 0, canvas.width, canvas.height); return; }
+      animationId = requestAnimationFrame(draw);
+    }
+    draw();
+    setTimeout(() => {
+      if(animationId) cancelAnimationFrame(animationId);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }, duration);
+  }
+</script>
+
+<div id="loginScreen">
+  <div class="login-logo">EVO DOWNLOAD</div>
+  <div class="login-subtitle">secure vault • fast links</div>
+  <div class="login-box">
+    <div class="login-field"><label>🆔 USERNAME</label><input type="text" id="loginId" placeholder="CCV / EVO"></div>
+    <div class="login-field"><label>🔒 PASSWORD</label><input type="password" id="loginPass" placeholder="••••••"></div>
+    <div class="login-error" id="loginError">❌ invalid credentials</div>
+    <button class="login-btn" onclick="doLogin()">⚡ LOGIN ⚡</button>
+  </div>
+</div>
+
+<div id="app">
+  <header>
+    <div class="logo">⟡ EVO DOWNLOAD ⟡</div>
+    <div class="header-right" style="display:flex; gap:12px; align-items:center">
+      <div class="user-badge" id="userBadge"></div>
+      <button class="logout-btn" onclick="doLogout()">🚪 خروج</button>
+    </div>
+  </header>
+
+  <!-- DISCORD BANNER - AT THE VERY TOP -->
+  <div class="discord-top-banner">
+    <span>🎮 انضم إلى مجتمعنا على ديسكورد</span>
+    <a href="https://discord.gg/Duz2Z5fXs7" target="_blank" class="discord-link-btn">💬 discord.gg/Duz2Z5fXs7</a>
+    <span style="font-size:0.75rem;">| تحديثات حصرية • دعم فني • طلبات الألعاب</span>
+  </div>
+
+  <div class="search-section">
+    <div class="search-wrapper">
+      <input type="text" class="search-input" id="globalSearch" placeholder="🔍 ابحث عن لعبة، برنامج، أو ويندوز..." oninput="renderFiles()">
+    </div>
+    <div class="stats-bar" id="statsBar"></div>
+  </div>
+
+  <div class="main-layout">
+    <aside class="sidebar">
+      <div class="sidebar-title">📂 التصنيفات</div>
+      <div id="catList"></div>
+      <div class="add-cat-section" id="adminCatPanel" style="display: none;">
+        <input type="text" class="add-cat-input" id="newCatName" placeholder="فئة جديدة...">
+        <button class="add-cat-btn" style="background:var(--accent2); border:none; border-radius:30px; padding:0 12px;" onclick="addNewCategory()">+</button>
+      </div>
+    </aside>
+
+    <main>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:10px;">
+        <h2 id="sectionTitleDisplay" style="font-size:1.4rem;">📦 جميع الملفات</h2>
+        <button id="addFileMasterBtn" style="display:none;" class="add-file-btn" onclick="openFileModal()">➕ إضافة ملف</button>
+      </div>
+      <div id="filesGrid" class="files-grid"></div>
+
+      <!-- REVIEWS SECTION -->
+      <div class="reviews-section">
+        <div class="reviews-header">
+          <div>
+            <div class="rating-stars">★★★★★</div>
+            <div style="font-size:0.8rem; color:var(--muted);">4.9 / 5 · ‪(‎+2,450 تقييم)‬</div>
+          </div>
+          <a href="https://discord.gg/Duz2Z5fXs7" target="_blank" class="discord-link-btn" style="background:#404EED;">💬 انضم للسيرفر</a>
+        </div>
+        <div class="reviews-grid" id="reviewsGrid"></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div class="modal-overlay" id="fileModalLayer">
+  <div class="modal">
+    <h3 id="modalTitleText" style="color:var(--accent)">➕ ملف جديد</h3>
+    <div class="form-group"><label>الاسم</label><input type="text" id="fileNameInput" placeholder="اسم الملف"></div>
+    <div class="form-group"><label>أيقونة (رمز)</label><input type="text" id="fileIconInput" placeholder="🎮"></div>
+    <div class="form-group"><label>التصنيف</label><select id="fileCategorySelect"></select></div>
+    <div class="form-group"><label>الوصف</label><textarea id="fileDescInput" rows="2" placeholder="وصف"></textarea></div>
+    <div class="form-group"><label>رابط التحميل *</label><input type="text" id="fileUrlInput" placeholder="https://..."></div>
+    <div class="form-group"><label>الحجم</label><input type="text" id="fileSizeInput" placeholder="مثال: 2.8 GB"></div>
+    <div class="form-group"><label>كلمة المرور (اختياري)</label><input type="text" id="filePassInput" placeholder="pass if any"></div>
+    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+      <button class="btn-cancel" style="background:transparent; border:1px solid gray; padding:6px 16px; border-radius:40px;" onclick="closeFileModal()">إلغاء</button>
+      <button class="btn-primary" style="background:linear-gradient(135deg,var(--accent2),var(--accent)); border:none; padding:6px 22px; border-radius:40px;" onclick="saveFileData()">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<div id="toastMsg" class="toast">✨</div>
+
+<script>
+  const USERS = { CCV: { pass: '150', role: 'king' }, EVO: { pass: '777', role: 'user' } };
+  let currentUser = null, isKing = false, activeCategory = 'all', editingFileId = null;
+
+  // Fake reviews
+  const fakeReviews = [
+    { text: "أفضل منصة تحميل على الإطلاق! الروابط سريعة والملفات مضغوطة بشكل رهيب. شكراً EVO ❤️", stars: 5, author: "محمد", flag: "🇸🇦" },
+    { text: "The best download platform ever! All games work perfectly and the Windows Lite versions are amazing.", stars: 5, author: "John", flag: "🇺🇸" },
+    { text: "Melhor site de downloads! Otimização incrível, jogos rodando liso. Recomendo demais!", stars: 5, author: "Carlos", flag: "🇧🇷" },
+    { text: "روابط مباشرة وسريعة، توزيعات الويندوز خفيفة جداً. موقع أسطوري!", stars: 5, author: "أحمد", flag: "🇪🇬" },
+    { text: "Absolutely flawless! The GTA packs are insane. Best community on Discord too.", stars: 5, author: "Chris", flag: "🇬🇧" },
+    { text: "Windows 10 Mega Lite é perfeito pra jogos leves. Site confiável e atualizado.", stars: 5, author: "Rafael", flag: "🇧🇷" },
+    { text: "ما توقعت ألقى موقع بهالجودة. كل شيء منظم وروابط التحميل تعمل 100%", stars: 5, author: "عبدالله", flag: "🇰🇼" },
+    { text: "I downloaded RDR2 Lite and it's absolutely playable with great FPS. Thank you team!", stars: 5, author: "Mike", flag: "🇨🇦" }
+  ];
+
+  let DATA = {
+    categories: [
+      { id: 'games', name: '🎮 ألعاب' },
+      { id: 'win_custom', name: '🎨 تخصيص ويندوز' },
+      { id: 'windows', name: '💠 نسخ ويندوز' },
+      { id: 'apps', name: '🛠️ برامج وتطبيقات' }
+    ],
+    files: [
+      { id: "g1", name: "𝐑𝐄𝐃 𝐃𝐄𝐀𝐃 𝟐 𝐋𝐈𝐓𝐄", icon: "🤠", cat: "games", desc: "النسخة المضغوطة من تحفة روكستار الغربية", url: "https://1fichier.com/?i5w23znd58sliayfapse", size: "", pass: "", downloads: 0 },
+      { id: "g2", name: "𝗚𝗧𝗔 𝗦𝗔𝗡 𝗔𝗡𝗗𝗥𝗘𝗔𝗦 𝗦𝗨𝗣𝗘𝗥 𝗟𝗜𝗧𝗘", icon: "🏙️", cat: "games", desc: "العنوان الأسطوري بنسخة خفيفة ومحسنة", url: "https://www.mediafire.com/file/an93p4r1n40pvq9/GTA_San_Andreas_CANAIMA_Mod_Opti.7z/file", size: "1.8 GB", pass: "", downloads: 0 },
+      { id: "g3", name: "𝗦𝗽𝗶𝗱𝗲𝗿-𝗠𝗮𝗻 𝟯", icon: "🕷️", cat: "games", desc: "مغامرات سبايدرمان بالعالم المفتوح", url: "https://www.mediafire.com/file/2zzvt86fx7q2siu/Spider-Man_3_OptiPana.7z/file", size: "", pass: "", downloads: 0 },
+      { id: "g4", name: "𝐑𝐞𝐬𝐢𝐝𝐞𝐧𝐭 𝐄𝐯𝐢𝐥 𝟒", icon: "🧟", cat: "games", desc: "كلاسيكية الرعب والإثارة", url: "https://gofile.io/d/V4ONTb", size: "", pass: "", downloads: 0 },
+      { id: "g5", name: "𝐅𝐚𝐫 𝐂𝐫𝐲 𝟒 𝐔𝐥𝐭𝐫𝐚 𝐋𝐢𝐭𝐞", icon: "🏔️", cat: "games", desc: "نسخة خفيفة من عالم الهيمالايا", url: "https://gofile.io/d/u4CyzB", size: "", pass: "", downloads: 0 },
+      { id: "g6", name: "𝗚𝗧𝗔 𝟱 𝗨𝗟𝗧𝗥𝗔 𝗟𝗜𝗧𝗘", icon: "💰", cat: "games", desc: "GTA V بأداء فائق و حجم أقل", url: "https://www.mediafire.com/file/zrvd22mdkh0vvpg/GTA_V_CUTRIP_optijuegos.net.7z/file", size: "", pass: "", downloads: 0 },
+      { id: "g7", name: "𝗠𝗜𝗡𝗘𝗖𝗥𝗔𝗙𝗧 𝗨𝗟𝗧𝗥𝗔 𝗟𝗜𝗧𝗘 (𝗝𝗔𝗩𝗔)", icon: "⛏️", cat: "games", desc: "ماين كرافت جافا خفيفة وسريعة", url: "https://www.mediafire.com/file/e28gcx1zx0lc539/OptiCraft_JAVA_NEWER.7z/file", size: "", pass: "", downloads: 0 },
+      { id: "g8", name: "𝗚𝗔𝗥𝗥𝗬'𝗦 𝗠𝗢𝗗 𝗨𝗟𝗧𝗥𝗔 𝗟𝗜𝗧𝗘", icon: "🔧", cat: "games", desc: "متعة الفيزياء والتعديل", url: "https://www.mediafire.com/file/7ymehk6r5a7my44/Garry%27s_Mod_Optimized.7z/file", size: "", pass: "", downloads: 0 },
+      { id: "c1", name: "𝗖𝗨𝗥𝗦𝗢𝗥 𝗠𝗢𝗨𝗦𝗘 𝗣𝗔𝗖𝗞", icon: "🖱️", cat: "win_custom", desc: "باكج كراسير احترافي من YAGAMI FPS", url: "https://www.mediafire.com/file/18rn2fdp1aqaoaa/PACK_DE_CURSORS_BY_YAGAMI_FPS.rar/file", size: "8 MB", pass: "yagalegit", downloads: 0 },
+      { id: "w1", name: "𝗪𝗜𝗡𝗗𝗢𝗪𝗦 𝗠𝗘𝗚𝗔 𝗟𝗜𝗧𝗘 𝟯.𝟬", icon: "💿", cat: "windows", desc: "ويندوز 10 محسن وخفيف جداً للألعاب", url: "https://www.mediafire.com/file/7zifd9z8h9r0nuv/Windows_10_Mega_Lite_3.0_Atualizado_x64_Com_Defender.exe/file", size: "2.8 GB", pass: "", downloads: 0 },
+      { id: "w2", name: "𝗪𝗶𝗻𝗱𝗼𝘄𝘀 𝟭𝟬 𝗠𝗲𝗴𝗮 𝗟𝗶𝘁𝗲 𝗣𝗿𝗲𝗺𝗶𝘂𝗺 𝟮.𝟬", icon: "📀", cat: "windows", desc: "نسخة بريميوم مضغوطة مع تحديثات", url: "https://www.mediafire.com/file/l3g8az9k4j2nrci/Windows_10_Premium_-_64_bits.iso/file", size: "3.2 GB", pass: "", downloads: 0 },
+      { id: "a1", name: "𝗗𝗶𝘀𝗰𝗼𝗿𝗱 𝗟𝗶𝘁𝗲 𝗦𝗔𝗜𝗧𝗧𝗔𝗠𝗔", icon: "💬", cat: "apps", desc: "نسخة خفيفة من ديسكورد بأداء ممتاز", url: "https://www.mediafire.com/file/y949w1snfos4inj/DISCORD_LITE.rar/file", size: "", pass: "", downloads: 0 },
+      { id: "a2", name: "𝐁𝐑𝐀𝐕𝐄 𝐋𝐈𝐓𝐄", icon: "🦁", cat: "apps", desc: "متصفح Brave خفيف وسريع", url: "https://www.mediafire.com/file/b8ere8hx18necu8/Brave_Lite_Team_AntiLag.exe/file", size: "72 MB", pass: "", downloads: 0 },
+      { id: "a3", name: "Mechvibes Super Lite", icon: "⌨️", cat: "apps", desc: "محاكي أصوات كيبورد ميكانيكي", url: "https://www.mediafire.com/file/6ayqizuwertycmn/Mechvibes_Super_Lite_By_StrikeX.rar/file", size: "", pass: "", downloads: 0 },
+      { id: "a4", name: "WALLPAPER ENGINE LITE", icon: "🖥️", cat: "apps", desc: "خلفيات حية متحركة - نسخة خفيفة", url: "https://www.mediafire.com/file/a5kwchg3z4r2zwo/Wallpaper_Engine_Team_AntiLag.rar/file", size: "156 MB", pass: "", downloads: 0 },
+      { id: "a5", name: "𝗢𝗕𝗦 𝗟𝗜𝗧𝗘", icon: "📺", cat: "apps", desc: "برنامج تسجيل وبث احترافي", url: "https://www.mediafire.com/file/smtkt8na8nz6ms1/OBS_Team_AntiLag_Mega_Lite.rar/file", size: "94 MB", pass: "", downloads: 0 }
+    ]
+  };
+
+  function loadData() {
+    const stored = localStorage.getItem('evo_fresh_data');
+    if(stored) {
+      try {
+        let parsed = JSON.parse(stored);
+        if(parsed && parsed.files && parsed.files.length > 0) DATA = parsed;
+        else localStorage.setItem('evo_fresh_data', JSON.stringify(DATA));
+      } catch(e) { localStorage.setItem('evo_fresh_data', JSON.stringify(DATA)); }
+    } else localStorage.setItem('evo_fresh_data', JSON.stringify(DATA));
+  }
+  function persist() { localStorage.setItem('evo_fresh_data', JSON.stringify(DATA)); }
+  loadData();
+
+  function renderReviews() {
+    const container = document.getElementById('reviewsGrid');
+    if(!container) return;
+    let shuffled = [...fakeReviews].sort(() => 0.5 - Math.random());
+    let selected = shuffled.slice(0, 6);
+    container.innerHTML = selected.map(r => `
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">"${r.text}"</div>
+        <div class="review-author"><span class="flag-icon">${r.flag}</span> ${r.author}</div>
+      </div>
+    `).join('');
+  }
+
+  function showToast(text, isErr=false) {
+    let toast = document.getElementById('toastMsg');
+    toast.innerText = text;
+    toast.style.borderColor = isErr ? '#ef4444' : '#00d4ff';
+    toast.style.color = isErr ? '#ef4444' : '#00d4ff';
+    toast.classList.add('show');
+    setTimeout(()=> toast.classList.remove('show'), 2400);
+    if(!isErr) sfx.success(); else sfx.error();
+  }
+
+  function doLogin() {
+    let id = document.getElementById('loginId').value.trim().toUpperCase();
+    let pass = document.getElementById('loginPass').value.trim();
+    if(USERS[id] && USERS[id].pass === pass) {
+      currentUser = id;
+      isKing = USERS[id].role === 'king';
+      sfx.loginSound();
+      startConfetti(); // CELEBRATION EFFECT
+      document.body.classList.add('logged-in-cursor'); // CHANGE CURSOR
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      initDashboard();
+      renderReviews();
+    } else {
+      sfx.error();
+      document.getElementById('loginError').style.display = 'block';
+      document.getElementById('loginPass').value = '';
+    }
+  }
+  
+  function doLogout() { 
+    sfx.click(); 
+    currentUser = null; 
+    isKing = false; 
+    document.body.classList.remove('logged-in-cursor'); // RESET CURSOR
+    document.getElementById('loginScreen').style.display = 'flex'; 
+    document.getElementById('app').style.display = 'none'; 
+  }
+  
+  function initDashboard() {
+    const badgeDiv = document.getElementById('userBadge');
+    if(isKing) { badgeDiv.innerHTML = '👑 الملك CCV'; badgeDiv.classList.add('king-badge'); }
+    else { badgeDiv.innerHTML = `👤 ${currentUser}`; badgeDiv.classList.remove('king-badge'); }
+    document.getElementById('addFileMasterBtn').style.display = isKing ? 'flex' : 'none';
+    document.getElementById('adminCatPanel').style.display = isKing ? 'flex' : 'none';
+    renderCategoriesSidebar();
+    renderFiles();
+    updateStats();
+  }
+  
+  function updateStats() {
+    let total = DATA.files.length;
+    let totalDl = DATA.files.reduce((acc,f)=> acc + (f.downloads||0),0);
+    document.getElementById('statsBar').innerHTML = `<div class="stat-item">📁 <span>${DATA.categories.length}</span> فئة</div><div class="stat-item">📄 <span>${total}</span> ملف</div><div class="stat-item">⬇️ <span>${totalDl}</span> تحميل</div>`;
+  }
+  
+  function renderCategoriesSidebar() {
+    let container = document.getElementById('catList');
+    let allCount = DATA.files.length;
+    let html = `<div class="cat-item ${activeCategory === 'all' ? 'active' : ''}" onclick="setActiveCat('all')"><div class="cat-left">📦 الجميع</div><span class="cat-count">${allCount}</span></div>`;
+    DATA.categories.forEach(cat => {
+      let count = DATA.files.filter(f => f.cat === cat.id).length;
+      let delBtn = isKing ? `<button class="icon-btn" style="background:transparent; border:none; color:#aaa;" onclick="event.stopPropagation(); deleteCategoryById('${cat.id}')">🗑️</button>` : '';
+      html += `<div class="cat-item ${activeCategory === cat.id ? 'active' : ''}" onclick="setActiveCat('${cat.id}')"><div class="cat-left">${cat.name}</div><div style="display:flex; gap:5px;"><span class="cat-count">${count}</span>${delBtn}</div></div>`;
+    });
+    container.innerHTML = html;
+  }
+  
+  function setActiveCat(catId) { sfx.click(); activeCategory = catId; renderCategoriesSidebar(); renderFiles(); let title = catId === 'all' ? '📦 جميع الملفات' : (DATA.categories.find(c=>c.id===catId)?.name || catId); document.getElementById('sectionTitleDisplay').innerHTML = title; }
+  
+  function renderFiles() {
+    let searchQuery = document.getElementById('globalSearch')?.value.toLowerCase() || '';
+    let filtered = DATA.files.filter(f => (activeCategory === 'all' || f.cat === activeCategory));
+    if(searchQuery) filtered = filtered.filter(f => f.name.toLowerCase().includes(searchQuery) || (f.desc||'').toLowerCase().includes(searchQuery));
+    let grid = document.getElementById('filesGrid');
+    if(!filtered.length) { grid.innerHTML = '<div class="empty-state">🔍 لا توجد ملفات مطابقة</div>'; return; }
+    grid.innerHTML = filtered.map(f => {
+      let adminActions = isKing ? `<button class="copy-btn" style="background:transparent;" onclick="editFileById('${f.id}')">✏️</button><button class="copy-btn" style="color:var(--danger);" onclick="deleteFileById('${f.id}')">🗑️</button>` : '';
+      let passHtml = f.pass ? `<span class="meta-tag meta-pass">🔑 ${f.pass}</span>` : '';
+      let sizeHtml = f.size ? `<span class="meta-tag meta-size">💾 ${f.size}</span>` : '';
+      let dlHtml = `<span class="meta-tag meta-downloads">⬇️ ${f.downloads||0}</span>`;
+      return `<div class="file-card"><div class="file-card-top"><div style="display:flex; gap:12px;"><div class="file-icon-wrap">${f.icon||'📄'}</div><div class="file-name">${f.name}</div></div><div style="display:flex; gap:6px;">${adminActions}</div></div>${f.desc ? `<div class="file-desc">${f.desc}</div>` : ''}<div class="file-meta">${sizeHtml} ${dlHtml} ${passHtml}</div><div class="file-card-bottom"><button class="download-btn" onclick="triggerDownload('${f.id}')">⬇️ تحميل</button><button class="copy-btn" id="copyBtn_${f.id}" onclick="copyFileLink('${f.id}')">📋 نسخ</button></div></div>`;
+    }).join('');
+  }
+  
+  function triggerDownload(id) { let file = DATA.files.find(f=>f.id===id); if(file) { file.downloads = (file.downloads||0)+1; persist(); updateStats(); renderFiles(); sfx.download(); if(file.url) window.open(file.url,'_blank'); showToast(`⏳ جاري فتح رابط: ${file.name}`); } }
+  function copyFileLink(id) { let file = DATA.files.find(f=>f.id===id); if(file && file.url) { navigator.clipboard.writeText(file.url); sfx.copySound(); showToast('✅ تم نسخ الرابط'); let btn=document.getElementById(`copyBtn_${id}`); if(btn){ btn.innerText='✅'; setTimeout(()=>{ btn.innerText='📋 نسخ'; },1500); } } }
+  function openFileModal() { if(!isKing) return; sfx.click(); editingFileId = null; document.getElementById('fileNameInput').value = ''; document.getElementById('fileIconInput').value = '📄'; document.getElementById('fileDescInput').value = ''; document.getElementById('fileUrlInput').value = ''; document.getElementById('fileSizeInput').value = ''; document.getElementById('filePassInput').value = ''; populateCatDropdown(); document.getElementById('modalTitleText').innerText = '➕ إضافة ملف جديد'; document.getElementById('fileModalLayer').classList.add('open'); }
+  function editFileById(id) { let f = DATA.files.find(x=>x.id===id); if(!f) return; sfx.click(); editingFileId = id; document.getElementById('fileNameInput').value = f.name; document.getElementById('fileIconInput').value = f.icon||'📄'; document.getElementById('fileDescInput').value = f.desc||''; document.getElementById('fileUrlInput').value = f.url||''; document.getElementById('fileSizeInput').value = f.size||''; document.getElementById('filePassInput').value = f.pass||''; populateCatDropdown(f.cat); document.getElementById('modalTitleText').innerText = '✏️ تعديل الملف'; document.getElementById('fileModalLayer').classList.add('open'); }
+  function populateCatDropdown(selectedVal='') { let select = document.getElementById('fileCategorySelect'); select.innerHTML = DATA.categories.map(c => `<option value="${c.id}" ${c.id===selectedVal ? 'selected':''}>${c.name}</option>`).join(''); }
+  function saveFileData() { let name = document.getElementById('fileNameInput').value.trim(); let url = document.getElementById('fileUrlInput').value.trim(); if(!name || !url) { showToast('❌ الاسم والرابط مطلوبان',true); return; } let newFile = { name: name, icon: document.getElementById('fileIconInput').value.trim() || '📄', cat: document.getElementById('fileCategorySelect').value, desc: document.getElementById('fileDescInput').value.trim(), url: url, size: document.getElementById('fileSizeInput').value.trim(), pass: document.getElementById('filePassInput').value.trim(), downloads: 0 }; if(editingFileId) { let idx = DATA.files.findIndex(f=>f.id===editingFileId); if(idx!==-1) { DATA.files[idx] = {...DATA.files[idx], ...newFile}; showToast('✅ تم التحديث'); sfx.success(); } } else { newFile.id = 'f_' + Date.now(); DATA.files.push(newFile); showToast('✅ تمت الإضافة'); } persist(); closeFileModal(); renderFiles(); renderCategoriesSidebar(); updateStats(); }
+  function deleteFileById(id) { if(!isKing) return; if(confirm('حذف الملف نهائياً؟')){ sfx.deleteSound(); DATA.files = DATA.files.filter(f=>f.id!==id); persist(); renderFiles(); renderCategoriesSidebar(); updateStats(); showToast('🗑️ تم الحذف');} }
+  function addNewCategory() { let input = document.getElementById('newCatName'); let catName = input.value.trim(); if(!catName) return; sfx.click(); let newId = 'cat_'+Date.now(); DATA.categories.push({ id: newId, name: catName }); persist(); input.value = ''; renderCategoriesSidebar(); showToast('✅ فئة جديدة'); }
+  function deleteCategoryById(catId) { if(!isKing) return; if(confirm(`حذف الفئة وجميع ملفاتها؟`)){ sfx.deleteSound(); DATA.categories = DATA.categories.filter(c=>c.id !== catId); DATA.files = DATA.files.filter(f=>f.cat !== catId); if(activeCategory === catId) activeCategory = 'all'; persist(); renderCategoriesSidebar(); renderFiles(); updateStats(); showToast('🗑️ تم حذف الفئة');} }
+  function closeFileModal() { document.getElementById('fileModalLayer').classList.remove('open'); editingFileId = null; }
+  document.addEventListener('keydown', e=>{ if(e.key==='Enter' && document.getElementById('loginScreen').style.display !== 'none') doLogin(); });
+  document.addEventListener('mouseover', (e) => { if(e.target.matches('button, .cat-item, .download-btn, .copy-btn, .login-btn, .discord-link-btn')) sfx.hover(); });
+</script>
+</body>
+</html>
